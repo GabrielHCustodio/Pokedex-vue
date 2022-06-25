@@ -8,9 +8,18 @@
 
           <div class="card-body bg-pokebola bg-normal">
             <div class="pokemon">
-              <transition>
+              <transition name="slide">
                 <img src="@/assets/pokemons/001.png" v-if="display">
               </transition>
+
+              <div class="evolutions">
+                <transition name="fade">
+                  <img src="@/assets/pokemons/003.png" v-if="display">
+                </transition>
+                <transition name="fade">
+                  <img src="@/assets/pokemons/002.png" v-if="display">
+                </transition>
+              </div>
             </div>
           </div>
 
@@ -81,6 +90,8 @@ body {
 </style>
 
 <style scoped>
+@import '~@/assets/css/animations.css';
+
 .pokedex {
   padding: 20px;
   background-color: #ffffff;
@@ -179,5 +190,18 @@ body {
   margin: 20px 30px 20px 30px;
 }
 
-</style>
+.evolutions {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 70px;
+}
 
+.evolutions img {
+  cursor: pointer;
+  max-width: 100%;
+  max-height: 100%;
+  float: right;
+}
+
+</style>
