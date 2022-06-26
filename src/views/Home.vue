@@ -8,27 +8,38 @@
 
           <div class="card-body bg-pokebola bg-normal">
             <div class="pokemon">
-              <transition
+              <transition name="slide"
                 @after-enter="displayEvolutions = true"
                 @before-leave="displayEvolutions = false"
               >
-                <img :src="require(`@/assets/pokemons/${pokemon.image}`)" v-if="display">
+                <img :src="require(`@/assets/pokemons/${pokemon.imagem}`)" v-if="display">
               </transition>
 
               <div class="evolutions">
-                <transition name="fade">
-                  <img src="@/assets/pokemons/003.png" v-if="displayEvolutions">
-                </transition>
-                <transition name="fade">
-                  <img src="@/assets/pokemons/002.png" v-if="displayEvolutions">
+                <transition name="fade" v-for="e in pokemon.evolucoes" :key="e">
+                  <img :src="require(`@/assets/pokemons/${e.toString().padStart(3, '0')}.png`)" v-if="displayEvolutions">
                 </transition>
               </div>
             </div>
           </div>
 
           <div class="card-footer">
-            <nav class="nav nav-pills nav-fill"></nav>
-            <div class="detalhes"></div>
+            <nav class="nav nav-pills nav-fill">
+              <router-link class="nav-item nav-link text-white" :to="{ path: '/sobre'}" exact-active-class="active"> Sobre </router-link>
+              <router-link class="nav-item nav-link text-white" :to="{ path: '/status'}" exact-active-class="active"> Status </router-link>
+              <router-link class="nav-item nav-link text-white" :to="{ path: '/habilidades'}" exact-active-class="active"> Habilidades </router-link>
+            </nav>
+
+            <div class="detalhes">
+              <router-view v-slot="{ Component }" :pokemon="pokemon" @adicionarHabilidade="adicionarHabilidade" @removerHabilidade="removerHabilidade">
+                <transition
+                  enter-active-class="animate__animated animate__zoomInDown"
+                >
+                  <component :is="Component" />
+                </transition>
+              </router-view>
+            </div>
+
           </div>
         </div>
       </div>
@@ -59,11 +70,16 @@
         <div class="row">
           <div class="pokedex-catalogo">
 
-            <div v-for="p in pokemons" :key="p.id" :class="`cartao-pokemon bg-${p.type}`" @click="analyzePokemon(p)">
-              <h1>{{p.id}} {{ p.name }}</h1>
-              <span>{{ p.type }}</span>
+            <div v-for="p in pokemons" :key="p.id" :class="`cartao-pokemon bg-${p.tipo}`" @click="analyzePokemon(p)">
+              <h1>{{p.id}} {{ p.nome }}</h1>
+              <span>{{ p.tipo }}</span>
               <div class="cartao-pokemon-img">
-                <img :src="require(`@/assets/pokemons/${p.image}`)">
+                <transition
+                  appear
+                  enter-active-class="animate__animated animate__fadeInDown"
+                >
+                  <img :src="require(`@/assets/pokemons/${p.imagem}`)">
+                </transition>
               </div>
             </div>
 
@@ -83,39 +99,46 @@ export default {
       display: false,
       displayEvolutions: false,
       pokemon: {},
-      pokemons: [
-        { id: 1, name: 'Bulbasaur', type: 'grama', image: '001.png', evolutions: [2,3] },
-        { id: 2, name: 'Ivysaur', type: 'grama', image: '002.png', evolutions: [3] },
-        { id: 3, name: 'Venusaur', type: 'grama', image: '003.png', evolutions: [] },
-        { id: 4, name: 'Charmander', type: 'fogo', image: '004.png', evolutions: [5, 6] },
-        { id: 5, name: 'Charmeleon', type: 'fogo', image: '005.png', evolutions: [6] },
-        { id: 6, name: 'Charizard', type: 'fogo', image: '006.png', evolutions: [] },
-        { id: 7, name: 'Squirtle', type: 'agua', image: '007.png', evolutions: [8,9] },
-        { id: 8, name: 'Wartortle', type: 'agua', image: '008.png', evolutions: [9] },
-        { id: 9, name: 'Blastoise', type: 'agua', image: '009.png', evolutions: [] },
-        { id: 10, name: 'Caterpie', type: 'inseto', image: '010.png', evolutions: [11,12] },
-        { id: 11, name: 'Metapod', type: 'inseto', image: '011.png', evolutions: [12] },
-        { id: 12, name: 'Butterfree', type: 'inseto', image: '012.png', evolutions: [] },
-        { id: 13, name: 'Weedle', type: 'inseto', image: '013.png', evolutions: [14,15] },
-        { id: 14, name: 'Kakuna', type: 'inseto', image: '014.png', evolutions: [15] },
-        { id: 15, name: 'Beedrill', type: 'inseto', image: '015.png', evolutions: [] },
-        { id: 16, name: 'Pidgey', type: 'normal', image: '016.png', evolutions: [17,18] },
-        { id: 17, name: 'Pidgeotto', type: 'normal', image: '017.png', evolutions: [18] },
-        { id: 18, name: 'Pidgeot', type: 'normal', image: '018.png', evolutions: [] }
-      ]
+      pokemons: []
     }
+  },
+  created() {
+    fetch('http://localhost:3000/pokemons')
+    .then( response => {
+      return response.json()
+    })
+    .then( data => {
+      this.pokemons = data
+    })
   },
   methods: {
       analyzePokemon(p) {
+        let mudarPokemon = false
 
         if((this.pokemon.id != p.id) && this.display) {
           setTimeout( () => {
             this.analyzePokemon(p)
           }, 1000)
+          mudarPokemon = true
         }
 
         this.pokemon = p
         this.display = !this.display
+        this.displayEvolutions = !this.displayEvolutions
+
+        if(!this.display && !mudarPokemon) {
+          this.pokemon = {}
+        }
+      },
+      adicionarHabilidade(habilidade) {
+        if(this.pokemon.habilidades) {
+          this.pokemon.habilidades.push(habilidade)
+        }
+      },
+      removerHabilidade(indice) {
+        if(this.pokemon.habilidades) {
+          this.pokemon.habilidades.splice(indice, 1)
+        }
       }
   }
 }
@@ -199,6 +222,10 @@ body {
   background-color: #26d3ab
 }
 
+.bg-eletrico {
+  background-color: #9b9b00
+}
+
 .bg-normal {
   background-color: #cecece
 }
@@ -239,7 +266,6 @@ body {
   cursor: pointer;
   max-width: 100%;
   max-height: 100%;
-  float: right;
 }
 
 </style>

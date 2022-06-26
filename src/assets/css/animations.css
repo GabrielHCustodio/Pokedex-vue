@@ -12,25 +12,25 @@
 }
 
 /* slide */
-.v-enter-from {
+.slide-enter-from {
   transform: translateX(-150px);
   opacity: 0;
 }
 
-.v-enter-active {
+.slide-enter-active {
   transition: all 1.5s;
 }
 
-.v-enter-to, .v-leave-from {
+.slide-enter-to, .slide-leave-from {
   transform: translateX(0px);
   opacity: 1;
 }
 
-.v-leave-to {
+.slide-leave-to {
   transform: translateX(150px);
   opacity: 0;
 }
 
-.v-leave-active {
+.slide-leave-active {
   transition: all 1s;
 }
