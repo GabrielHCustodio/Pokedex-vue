@@ -34,3 +34,36 @@
 .slide-leave-active {
   transition: all 1s;
 }
+
+/* lista */
+.lista-enter-from {
+  transform: translateX(-150px);
+  opacity: 0;
+}
+
+.lista-enter-active {
+  transition: all 1s;
+}
+
+.lista-enter-to, .lista-leave-from {
+  transform: translateX(0px);
+  opacity: 1;
+}
+
+.lista-leave-to {
+  transform: translateX(150px);
+  opacity: 0;
+}
+
+.lista-leave-active {
+  transition: all 0.5s;
+  position: absolute;
+}
+
+.lista-move {
+  transition: all 1s;
+}
+
+.ordenacao-move {
+  transition: all 2s;
+}
