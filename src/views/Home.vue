@@ -86,7 +86,7 @@
         </div>
 
         <div class="row">
-          <div class="col">
+          <div class="col-6">
             <select class="form-select" v-model="ordenacao">
               <option value="" disabled>Ordenar pokemons...</option>
               <option value="1">Id crescente</option>
@@ -96,14 +96,14 @@
             </select>
           </div>
 
-          <div class="col">
+          <!-- <div class="col">
             <input
               type="text"
               class="form-control"
               placeholder="Pesquisar pokémon"
               v-model="nomePokemon"
             />
-          </div>
+          </div> -->
         </div>
 
         <div class="row">
@@ -142,7 +142,7 @@ export default {
       display: false,
       displayEvolutions: false,
       pokemon: {},
-      // pokemons: []
+      //pokemons: [],
       pokemons: [
           { 
               "id": 1, 
@@ -424,11 +424,10 @@ export default {
           }
       ],
       ordenacao: '',
-      nomePokemon: ''
+      nomePokemon: '',
     };
   },
-  /*
-    created() {
+  /*created() {
     fetch("http://localhost:3000/pokemons")
       .then((response) => {
         return response.json();
@@ -436,8 +435,7 @@ export default {
       .then((data) => {
         this.pokemons = data;
       });
-  },
-  */
+  },*/
   methods: {
     analyzePokemon(p) {
       let mudarPokemon = false;
@@ -506,15 +504,15 @@ export default {
         })
       }
     },
-    nomePokemon(value) {
-      fetch(`http://localhost:3000/pokemons?nome_like=${value}`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        this.pokemons = data;
-      });
-    }
+    // nomePokemon(value) {
+    //   fetch(`http://localhost:3000/pokemons?nome_like=${value}`)
+    //   .then((response) => {
+    //     return response.json();
+    //   })
+    //   .then((data) => {
+    //     this.pokemons = data;
+    //   });
+    // }
   },
 };
 </script>
